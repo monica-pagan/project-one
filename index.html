@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Leaflet Map</title>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.0.3/dist/leaflet.css"/>
+  <style>
+  html { height:100%;}
+
+body {
+    height:100%;
+    padding: 0;
+    margin: 0;
+}
+
+#map {
+	width: 100%;
+	margin: 0 auto;
+	height: 95%;
+}
+
+#header {
+	margin-top: 0px;
+	margin-bottom: 0px;
+}
+
+.info {
+    z-index: 1000;
+    position: absolute;
+    right: 40%;
+    top: 5%;
+    padding: 6px 8px;
+    font: 14px Arial, Helvetica, sans-serif;
+    text-align: center;
+    background: white;
+    background: rgba(255, 255, 255, 0.8);
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+    border-radius: 5px;
+}
+
+.info h1 {
+    font-size: 16px;
+    margin: 0 0 5px;
+    color: #777777;
+}
+
+.legend {
+	line-height: 18px;
+	color: #333333;
+	font-family: 'Open Sans', Helvetica, sans-serif;
+	padding: 12px 16px;
+	background: white;
+	background: rgba(255,255,255,0.8);
+	box-shadow: 0 0 15px rgba(0,0,0,0.2);
+	border-radius: 5px;
+}
+
+.legend i {
+	width: 28px;
+	height: 18px;
+	float: left;
+	margin-right: 15px;
+	opacity: 0.7;
+}
+
+.legend p {
+	font-size: 12px;
+	line-height: 18px;
+	margin: 0;
+}
+
+body,
+html {
+  height: 100%;
+  font-family:Arial;
+}
+
+#map {
+  width: 100%;
+  height: 100%;
+  z-index:100;
+}
+#mapSearchContainer{
+  position:fixed;
+  top:20px;
+  right: 40px;
+  height:30px;
+  width:180px;
+  z-index:110;
+  font-size:10pt;
+  color:#5d5d5d;
+  border:solid 1px #bbb;
+  background-color:#f8f8f8;
+}
+.pointer{
+  position:absolute;
+  top:86px;
+  left:60px;
+  z-index:99999;
+}
+
+/*search bar information underneath*/
+
+<div id="map"></div>
+<div class='pointer'><< Click search button</div>
+
+/*search bar info finished*/
+
+
+</style>
+</head>
+<body>
+  <!-- Our web map and content will go here -->
+  <script src="https://unpkg.com/leaflet@1.0.3/dist/leaflet.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script
+  <!-- <script src="C:\Users\tuf91019\Philadelphia_Neighborhoods.js"></script>
+  <script src="javaschool\Schools.js"></script> -->
+  <div id="map" style="width: 1000px; height: 600px">
+  </div>
+  <script>
+      var map = L.map('map', {center: [40.01887, -75.13302], zoom: 11});
+      L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', { attribution: '© OpenStreetMap' }).addTo(map);
+      map.doubleClickZoom.disable();
+
+
+
+
+
+      // Create an Empty Popup
+      var popup = L.popup();
+
+      // Write function to set Properties of the Popup
+      function onMapClick(e) {
+          popup
+              .setLatLng(e.latlng)
+              .setContent("You clicked the map at " + e.latlng.toString())
+              .openOn(map);
+      }
+
+      // Listen for a click event on the Map element
+      map.on('click', onMapClick);
+
+function setColorFunc(colorty){
+    switch (colorty) {
+      case 'Charter':
+        return 'yellow';
+      case 'District' :
+        return 'blue';
+      case 'Archdiocese':
+        return '#828282';
+      case  'Private' :
+        return '#151515';
+      case 'Contracted':
+       return '#000000';
+      case null:
+      return '#ffffff';
+    }
+};
+
+
+var neighborhoodsLayer = null;
+  $.getJSON("data/zipcodes.geojson",function(data){
+    zipcodes = L.geoJson(data, {
+          // style: styleFunc,
+          onEachFeature: function(feature, layer){
+              layer.bindPopup('Zipcode: '+feature.properties.CODE);
+              layer.on({
+                      // mouseover: highlightFeature,
+                      // mouseout: resetHighlight,
+                      click: zoomFeature
+                  });
+          }
+      }).addTo(map).bringToBack();
+  });
+
+      // // load GeoJSON from an external file
+
+              //     var new_marker = ('data/schools.geojson')
+              //     function setHighlightIcon(e) {
+              //     new_marker = e.target;
+              //     var pinselected = pin+1;
+              //                     new_marker.setIcon(new L.NumberedDivIcon({number: key, state:pinselected}));
+              //                     new_marker.setZIndexOffset(+100)
+              //         }
+              //
+              //     function setDefaultIcon() {
+              //     var pindeselected = pin;
+              //     new_marker.setIcon(new L.NumberedDivIcon({number: key, state: pindeselected}));
+              //        }
+              //
+              //     new_marker.on({
+              //         'click': setHighlightIcon
+              //     });
+              //
+              //        markers.push(new_marker.addTo(map));
+              //
+              //        return settings.results_el.append(settings.results_template(key, result));
+              //               })
+              //     } else {
+              //        return settings.results_el.append(settings.no_results_template());
+              //     }
+              //     }
+
+
+              // var neighborhoodsLayer = null;
+                $.getJSON("data/Schools.geojson",function(data){
+                    Schools = L.geoJson(data, {
+                        pointToLayer: function(feature, latlng) {return new L.CircleMarker(latlng, {
+                            radius: 8,
+                            fillColor: setColorFunc(feature.properties.TYPE_SPECIFIC),
+                            color: "black",
+                            weight: .5
+                          });
+                        },
+                        // onEachFeature: function(feature, layer){
+                        //   onEachFeature:
+                        //  function onEachFeatureFunc(feature, layer){
+                        //  layer.on({
+                        //          mouseover: highlightFeature,
+                        //          mouseout: resetHighlight,
+                        //          click: zoomFeature
+                        //       });
+                        //   }
+                        //   layer.bindPopup('School Type: '+feature.properties.TYPE_SPECIFIC + '<br>'
+                        //    + 'Enrollment: '+feature.properties.ENROLLMENT + '<br>' + 'School Name: ' +feature.properties.SCHOOL_NAME);
+                        // }
+                    }).addTo(map).bringtoFront;
+                 });
+
+
+
+            $.getJSON("data/Schools.geojson",function(data){
+                Schools = L.geoJson(data, {
+                    pointToLayer: function(feature, latlng) {return new L.CircleMarker(latlng, markerD);},
+                    onEachFeature: function (feature, layer) {
+                        layer.on({
+                            mouseover: highlightCircleMarker,
+                            mouseout: resetCircleMarkerHighlight
+                            // click: zoomFeature
+                        });
+                        layer.bindPopup('School Type: '+feature.properties.TYPE_SPECIFIC + '<br>'
+                                     + 'Enrollment: '+feature.properties.ENROLLMENT + '<br>' + 'School Name: ' +feature.properties.SCHOOL_NAME_LABEL + '<br>' + 'Address: ' +feature.properties.STREET_ADDRESS );
+                    }
+                  }).addTo(map).bringToFront;
+                });
+
+               var markerDefault = function markerDefault(feature){
+                 return{
+                     radius: 8,
+                     weight: 2,
+                     opacity: 1,
+                     fillOpacity: 0.5,
+                     fillcolor: setColorFunc(feature.properties.TYPE_SPECIFIC)
+                 };
+               }
+
+                 var markerHighlight = {
+                     radius: 12,
+                     weight: 1,
+                     opacity: 1,
+                     fillOpacity: 0.50,
+                     color: 'red'
+                 };
+
+                 var markerD = {
+                     radius: 8,
+                     weight: 2,
+                     opacity: 1,
+                     fillOpacity: 0.0,
+                     color: 'grey'
+                 };
+
+
+
+function highlightCircleMarker(e) {
+    var layer = e.target;
+    layer.setStyle(markerHighlight).bringToBack;
+};
+
+function resetCircleMarkerHighlight(e) {
+    var layer = e.target;
+    layer.setStyle(markerD).bringToFront()
+};
+
+// function zoomFeature(e){
+//   var latLng = [e.target.getLatLng()]
+//   var markerBounds =L.latLng(latLng);
+//   map.fitbounds(markerBounds);}
+
+// console.log(e.target.getBounds());
+// map.fitBounds(e.target.getBounds().pad(1.5));
+// }
+
+
+       // var neighborhoodsLayer = null;
+       //   $.getJSON("data/Schools.geojson",function(data){
+       //       Schools = L.geoJson(data, {
+       //           pointToLayer: function(feature, latlng) {
+       //            return new L.CircleMarker(latlng, {
+       //               radius: 8,
+       //               fillColor: setColorFunc(feature.properties.TYPE_SPECIFIC),
+       //               color: "black",
+       //               weight: .5
+       //             });
+       //           },
+       //           onEachFeature: function(feature, layer){
+       //             onEachFeature:
+       //            function onEachFeatureFunc(feature, layer){
+       //            layer.on({
+       //                    mouseover: highlightFeature,
+       //                    mouseout: resetHighlight,
+       //                    click: zoomFeature
+       //                 });
+       //             }
+       //             layer.bindPopup('School Type: '+feature.properties.TYPE_SPECIFIC + '<br>'
+       //              + 'Enrollment: '+feature.properties.ENROLLMENT + '<br>' + 'School Name: ' +feature.properties.SCHOOL_NAME);
+       //           }
+       //       }).addTo(map).bringtoFront;
+       //    });
+
+
+
+// Zipcodes>>
+
+      function highlightFeature(e){
+          var layer = e.target;
+
+          layer.setStyle({
+              weight: 5,
+              color: '#666',
+              dashArray: '',
+              fillOpacity: 0.7
+          });
+          // for different web browsers
+          if (!L.Browser.ie && !L.Browser.opera && !L.Browser.edge) {
+              layer.bringToBack();
+          }
+      }
+
+      // Define what happens on mouseout:
+      function resetHighlight(e) {
+      Schools.resetStyle(e.target).bringToBack();
+      }
+
+      // Define what happens on mouseout:
+      function resetHighlight(e) {
+      zipcodes.resetStyle(e.target).bringToBack();
+      }
+
+      // As an additional touch, let’s define a click listener that zooms to the state:
+      function zoomFeature(e){
+      // console.log(e.target.getBounds());
+      map.fitBounds(e.target.getBounds().pad(1.5));
+      }
+
+      // As an additional touch, let’s define a click listener that zooms to the state:
+
+      // layer.feature.geometry.type = "Point" = L.geoJson
+      // function zoomFeature(e){
+      // console.log(e.target.getBounds());
+      // map.fitBounds(e.target.getBounds().pad(1.5));
+      // }
+      //
+      // // layer.feature.geometry.type === "Point"
+      // function zoomFeature(e){
+      // var LatLngs = L.geoJson
+      // var latLngs = [e.target.getLatLng(LatLngs)];
+      // var markerBounds = L.latLngBounds(LatLngs);
+      // console.log(e.target.getBounds().contains(layer.getLatLng()));
+      // map.fitBounds(markerBounds);
+      // }
+
+
+// map.getBounds().contains(layer.getLatLng())
+
+
+// function zoomFeature(e){
+// var LatLngs = L.geoJson
+// var latLngs = [e.target.getLatLng(LatLngs)];
+// var markerBounds = L.latLngBounds(LatLngs);
+// console.log(e.target.getBounds());
+// map.fitBounds(markerBound
+// }
+
+
+
+      // Add Scale Bar to Map
+      L.control.scale({position: 'bottomleft'}).addTo(map);
+
+      // Create Leaflet Control Object for Legend
+      var legend = L.control({position: 'bottomright'});
+
+      // Function that runs when legend is added to map
+      legend.onAdd = function (map) {
+
+      var div = L.DomUtil.create('div', 'legend');
+      div.innerHTML += '<b>Schools </b><br />';
+      div.innerHTML += 'by Type of School <br />';
+      div.innerHTML += '<br>';
+      div.innerHTML += '<i style="background: #afafea"></i><p>District</p>';
+      div.innerHTML += '<i style="background: #fffabb"></i><p>Charter</p>';
+      div.innerHTML += '<hr>';
+      div.innerHTML += '<i style="background: #d3d3d3"></i><p>Archdiocese</p>';
+      div.innerHTML += '<i style="background: #545454"></i><p>Private</p>'
+      div.innerHTML += '<i style="background: dark grey></i><p>Contracted</p>'
+      div.innerHTML += '<i style="background: pink></i><p>null</p>';
+      // Return the Legend div containing the HTML content
+      return div;
+      };
+
+      // var searchButton = L.control ({position: 'bottomright'});
+
+      // searchButton.onAdd = function (map) {
+      //   var div = L.DomUtil.create('searchTerm')
+      //   div.innerHTML += '<b>What are you looking for? </b><br />';
+      //   div.innerHTML += '<br>';
+      //   return div;
+      // };
+
+
+      // Add Legend to Map
+      legend.addTo(map);
+      // searchButton.addTo(map);
+
+  </script>
+</body>
+</html>
