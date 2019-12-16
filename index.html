@@ -56,15 +56,15 @@ body {
 }
 
 .legend i {
-	width: 28px;
+	width: 25px;
 	height: 18px;
 	float: left;
-	margin-right: 15px;
+	margin-right: 5px;
 	opacity: 0.7;
 }
 
 .legend p {
-	font-size: 12px;
+	font-size: 11.75px;
 	line-height: 18px;
 	margin: 0;
 }
@@ -74,38 +74,6 @@ html {
   height: 100%;
   font-family:Arial;
 }
-
-#map {
-  width: 100%;
-  height: 100%;
-  z-index:100;
-}
-#mapSearchContainer{
-  position:fixed;
-  top:20px;
-  right: 40px;
-  height:30px;
-  width:180px;
-  z-index:110;
-  font-size:10pt;
-  color:#5d5d5d;
-  border:solid 1px #bbb;
-  background-color:#f8f8f8;
-}
-.pointer{
-  position:absolute;
-  top:86px;
-  left:60px;
-  z-index:99999;
-}
-
-/*search bar information underneath*/
-
-<div id="map"></div>
-<div class='pointer'><< Click search button</div>
-
-/*search bar info finished*/
-
 
 </style>
 </head>
@@ -121,10 +89,6 @@ html {
       var map = L.map('map', {center: [40.01887, -75.13302], zoom: 11});
       L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', { attribution: '© OpenStreetMap' }).addTo(map);
       map.doubleClickZoom.disable();
-
-
-
-
 
       // Create an Empty Popup
       var popup = L.popup();
@@ -147,7 +111,7 @@ function setColorFunc(colorty){
       case 'District' :
         return 'blue';
       case 'Archdiocese':
-        return '#828282';
+        return '#BDBDBD';
       case  'Private' :
         return '#151515';
       case 'Contracted':
@@ -173,35 +137,6 @@ var neighborhoodsLayer = null;
       }).addTo(map).bringToBack();
   });
 
-      // // load GeoJSON from an external file
-
-              //     var new_marker = ('data/schools.geojson')
-              //     function setHighlightIcon(e) {
-              //     new_marker = e.target;
-              //     var pinselected = pin+1;
-              //                     new_marker.setIcon(new L.NumberedDivIcon({number: key, state:pinselected}));
-              //                     new_marker.setZIndexOffset(+100)
-              //         }
-              //
-              //     function setDefaultIcon() {
-              //     var pindeselected = pin;
-              //     new_marker.setIcon(new L.NumberedDivIcon({number: key, state: pindeselected}));
-              //        }
-              //
-              //     new_marker.on({
-              //         'click': setHighlightIcon
-              //     });
-              //
-              //        markers.push(new_marker.addTo(map));
-              //
-              //        return settings.results_el.append(settings.results_template(key, result));
-              //               })
-              //     } else {
-              //        return settings.results_el.append(settings.no_results_template());
-              //     }
-              //     }
-
-
               // var neighborhoodsLayer = null;
                 $.getJSON("data/Schools.geojson",function(data){
                     Schools = L.geoJson(data, {
@@ -212,18 +147,6 @@ var neighborhoodsLayer = null;
                             weight: .5
                           });
                         },
-                        // onEachFeature: function(feature, layer){
-                        //   onEachFeature:
-                        //  function onEachFeatureFunc(feature, layer){
-                        //  layer.on({
-                        //          mouseover: highlightFeature,
-                        //          mouseout: resetHighlight,
-                        //          click: zoomFeature
-                        //       });
-                        //   }
-                        //   layer.bindPopup('School Type: '+feature.properties.TYPE_SPECIFIC + '<br>'
-                        //    + 'Enrollment: '+feature.properties.ENROLLMENT + '<br>' + 'School Name: ' +feature.properties.SCHOOL_NAME);
-                        // }
                     }).addTo(map).bringtoFront;
                  });
 
@@ -236,7 +159,6 @@ var neighborhoodsLayer = null;
                         layer.on({
                             mouseover: highlightCircleMarker,
                             mouseout: resetCircleMarkerHighlight
-                            // click: zoomFeature
                         });
                         layer.bindPopup('School Type: '+feature.properties.TYPE_SPECIFIC + '<br>'
                                      + 'Enrollment: '+feature.properties.ENROLLMENT + '<br>' + 'School Name: ' +feature.properties.SCHOOL_NAME_LABEL + '<br>' + 'Address: ' +feature.properties.STREET_ADDRESS );
@@ -282,42 +204,6 @@ function resetCircleMarkerHighlight(e) {
     layer.setStyle(markerD).bringToFront()
 };
 
-// function zoomFeature(e){
-//   var latLng = [e.target.getLatLng()]
-//   var markerBounds =L.latLng(latLng);
-//   map.fitbounds(markerBounds);}
-
-// console.log(e.target.getBounds());
-// map.fitBounds(e.target.getBounds().pad(1.5));
-// }
-
-
-       // var neighborhoodsLayer = null;
-       //   $.getJSON("data/Schools.geojson",function(data){
-       //       Schools = L.geoJson(data, {
-       //           pointToLayer: function(feature, latlng) {
-       //            return new L.CircleMarker(latlng, {
-       //               radius: 8,
-       //               fillColor: setColorFunc(feature.properties.TYPE_SPECIFIC),
-       //               color: "black",
-       //               weight: .5
-       //             });
-       //           },
-       //           onEachFeature: function(feature, layer){
-       //             onEachFeature:
-       //            function onEachFeatureFunc(feature, layer){
-       //            layer.on({
-       //                    mouseover: highlightFeature,
-       //                    mouseout: resetHighlight,
-       //                    click: zoomFeature
-       //                 });
-       //             }
-       //             layer.bindPopup('School Type: '+feature.properties.TYPE_SPECIFIC + '<br>'
-       //              + 'Enrollment: '+feature.properties.ENROLLMENT + '<br>' + 'School Name: ' +feature.properties.SCHOOL_NAME);
-       //           }
-       //       }).addTo(map).bringtoFront;
-       //    });
-
 
 
 // Zipcodes>>
@@ -353,34 +239,6 @@ function resetCircleMarkerHighlight(e) {
       map.fitBounds(e.target.getBounds().pad(1.5));
       }
 
-      // As an additional touch, let’s define a click listener that zooms to the state:
-
-      // layer.feature.geometry.type = "Point" = L.geoJson
-      // function zoomFeature(e){
-      // console.log(e.target.getBounds());
-      // map.fitBounds(e.target.getBounds().pad(1.5));
-      // }
-      //
-      // // layer.feature.geometry.type === "Point"
-      // function zoomFeature(e){
-      // var LatLngs = L.geoJson
-      // var latLngs = [e.target.getLatLng(LatLngs)];
-      // var markerBounds = L.latLngBounds(LatLngs);
-      // console.log(e.target.getBounds().contains(layer.getLatLng()));
-      // map.fitBounds(markerBounds);
-      // }
-
-
-// map.getBounds().contains(layer.getLatLng())
-
-
-// function zoomFeature(e){
-// var LatLngs = L.geoJson
-// var latLngs = [e.target.getLatLng(LatLngs)];
-// var markerBounds = L.latLngBounds(LatLngs);
-// console.log(e.target.getBounds());
-// map.fitBounds(markerBound
-// }
 
 
 
@@ -400,27 +258,17 @@ function resetCircleMarkerHighlight(e) {
       div.innerHTML += '<i style="background: #afafea"></i><p>District</p>';
       div.innerHTML += '<i style="background: #fffabb"></i><p>Charter</p>';
       div.innerHTML += '<hr>';
-      div.innerHTML += '<i style="background: #d3d3d3"></i><p>Archdiocese</p>';
+      div.innerHTML += '<i style="background: #F5F5F5"></i><p>Null</p>'
+      div.innerHTML += '<i style="background: #BDBDBD"></i><p>Archdiocese</p>'
       div.innerHTML += '<i style="background: #545454"></i><p>Private</p>'
-      div.innerHTML += '<i style="background: dark grey></i><p>Contracted</p>'
-      div.innerHTML += '<i style="background: pink></i><p>null</p>';
+      div.innerHTML += '<i style="background: #000000"></i><p>Contracted</p>'
+      ;
       // Return the Legend div containing the HTML content
       return div;
       };
 
-      // var searchButton = L.control ({position: 'bottomright'});
-
-      // searchButton.onAdd = function (map) {
-      //   var div = L.DomUtil.create('searchTerm')
-      //   div.innerHTML += '<b>What are you looking for? </b><br />';
-      //   div.innerHTML += '<br>';
-      //   return div;
-      // };
-
-
       // Add Legend to Map
       legend.addTo(map);
-      // searchButton.addTo(map);
 
   </script>
 </body>
