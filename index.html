@@ -147,19 +147,19 @@ $.getJSON("zipcodes.geojson",function(data){
     }).addTo(map).bringToBack();
 });
 
-
-var neighborhoodsLayer = null;
-  $.getJSON("zipcodes.geojson",function(data){
-    zipcodes = L.geoJson(data, {
-          style: styleFunc,
-          onEachFeature: function(feature, layer){
-              layer.bindPopup('Zipcode: '+feature.properties.CODE);
-              layer.on({
-                      click: zoomFeature
-                  });
-          }
-      }).addTo(map).bringToBack();
-  });
+//
+// var neighborhoodsLayer = null;
+//   $.getJSON("zipcodes.geojson",function(data){
+//     zipcodes = L.geoJson(data, {
+//           style: styleFunc,
+//           onEachFeature: function(feature, layer){
+//               layer.bindPopup('Zipcode: '+feature.properties.CODE);
+//               layer.on({
+//                       click: zoomFeature
+//                   });
+//           }
+//       }).addTo(map).bringToBack();
+//   });
 
               // var neighborhoodsLayer = null;
                 $.getJSON("Schools.geojson",function(data){
