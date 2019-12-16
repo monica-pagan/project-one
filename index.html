@@ -104,16 +104,16 @@ html {
       // Listen for a click event on the Map element
       map.on('click', onMapClick);
 
-      function styleFunc(feature) {
-          return {
-              fillColor: setColorFunc(feature.properties.CODE),
-              fillOpacity: 0.5,
-              weight: 5,
-              opacity: 0.75,
-              color: 'light blue',
-              dashArray: '3'
-          };
-      }
+      // function styleFunc(feature) {
+      //     return {
+      //         fillColor: setColorFunc(feature.properties.CODE),
+      //         fillOpacity: 0.5,
+      //         weight: 5,
+      //         opacity: 0.75,
+      //         color: '',
+      //         dashArray: '3'
+      //     };
+      // }
 
 function setColorFunc(colorty){
     switch (colorty) {
@@ -133,19 +133,19 @@ function setColorFunc(colorty){
 };
 
 
-$.getJSON("zipcodes.geojson",function(data){
-  zipcodes = L.geoJson(data, {
-        style: styleFunc,
-        onEachFeature: function(feature, layer){
-            layer.bindPopup('Zipcode: '+feature.properties.CODE);
-            layer.on({
-                    click: zoomFeature,
-                    fillColor: setColorFunc(feature.properties.CODE),
-                    color: 'white'
-                });
-        }
-    }).addTo(map).bringToBack();
-});
+// $.getJSON("zipcodes.geojson",function(data){
+//   zipcodes = L.geoJson(data, {
+//         style: styleFunc,
+//         onEachFeature: function(feature, layer){
+//             layer.bindPopup('Zipcode: '+feature.properties.CODE);
+//             layer.on({
+//                     click: zoomFeature,
+//                     fillColor: setColorFunc(feature.properties.CODE),
+//                     color: 'white'
+//                 });
+//         }
+//     }).addTo(map).bringToBack();
+// });
 
 
 var neighborhoodsLayer = null;
