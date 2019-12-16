@@ -81,8 +81,8 @@ html {
   <!-- Our web map and content will go here -->
   <script src="https://unpkg.com/leaflet@1.0.3/dist/leaflet.js"></script>
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script
-  <script src="C:\Users\tuf91019\Philadelphia_Neighborhoods.js"></script>
-  <script src="javaschool\Schools.js"></script> -->
+ // <!-- <script src="C:\Users\tuf91019\Philadelphia_Neighborhoods.js"></script>
+  <!-- // <script src="javaschool\Schools.js"></script> -->
   <div id="map" style="width: 1000px; height: 600px">
   </div>
   <script>
@@ -123,7 +123,7 @@ function setColorFunc(colorty){
 
 
 var neighborhoodsLayer = null;
-  $.getJSON("data/zipcodes.geojson",function(data){
+  $.getJSON("zipcodes.geojson",function(data){
     zipcodes = L.geoJson(data, {
           // style: styleFunc,
           onEachFeature: function(feature, layer){
@@ -138,7 +138,7 @@ var neighborhoodsLayer = null;
   });
 
               // var neighborhoodsLayer = null;
-                $.getJSON("data/Schools.geojson",function(data){
+                $.getJSON("Schools.geojson",function(data){
                     Schools = L.geoJson(data, {
                         pointToLayer: function(feature, latlng) {return new L.CircleMarker(latlng, {
                             radius: 8,
@@ -152,7 +152,7 @@ var neighborhoodsLayer = null;
 
 
 
-            $.getJSON("data/Schools.geojson",function(data){
+            $.getJSON("Schools.geojson",function(data){
                 Schools = L.geoJson(data, {
                     pointToLayer: function(feature, latlng) {return new L.CircleMarker(latlng, markerD);},
                     onEachFeature: function (feature, layer) {
