@@ -125,12 +125,10 @@ function setColorFunc(colorty){
 var neighborhoodsLayer = null;
   $.getJSON("zipcodes.geojson",function(data){
     zipcodes = L.geoJson(data, {
-          // style: styleFunc,
+          style: styleFunc,
           onEachFeature: function(feature, layer){
               layer.bindPopup('Zipcode: '+feature.properties.CODE);
               layer.on({
-                      // mouseover: highlightFeature,
-                      // mouseout: resetHighlight,
                       click: zoomFeature
                   });
           }
@@ -238,9 +236,6 @@ function resetCircleMarkerHighlight(e) {
       // console.log(e.target.getBounds());
       map.fitBounds(e.target.getBounds().pad(1.5));
       }
-
-
-
 
       // Add Scale Bar to Map
       L.control.scale({position: 'bottomleft'}).addTo(map);
