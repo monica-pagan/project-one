@@ -60,7 +60,7 @@ body {
 	height: 18px;
 	float: left;
 	margin-right: 5px;
-	opacity: 0.7;
+	opacity: 0.0;
 }
 
 .legend p {
@@ -80,13 +80,13 @@ html {
 <body>
   <!-- Our web map and content will go here -->
   <script src="https://unpkg.com/leaflet@1.0.3/dist/leaflet.js"></script>
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script
-  <script src="C:\Users\tuf91019\Philadelphia_Neighborhoods.js"></script>
-  <script src="javaschool\Schools.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+  <script src="zipcodes.js"></script>
+  <script src="Schools.js"></script>
   <div id="map" style="width: 1000px; height: 600px">
   </div>
   <script>
-      var map = L.map('map', {center: [40.01887, -75.13302], zoom: 11.5});
+      var map = L.map('map', {center: [40.01887, -75.13302], zoom: 11});
       L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', { attribution: '© OpenStreetMap' }).addTo(map);
       map.doubleClickZoom.disable();
 
@@ -101,17 +101,8 @@ html {
               .openOn(map);
       }
 
-      function styleFunc(feature) {
-          return {
-              fillColor: setColorFunc(feature.properties.CODE),
-              fillOpacity: 0.5,
-              weight: 5,
-              opacity: 0.75,
-              color: 'white',
-              dashArray: '3'
-          };
-      }
-
+      // Listen for a click event on the Map element
+      map.on('click', onMapClick);
 
       // function styleFunc(feature) {
       //     return {
@@ -119,49 +110,48 @@ html {
       //         fillOpacity: 0.5,
       //         weight: 5,
       //         opacity: 0.75,
-      //         color: 'white',
+      //         color: '',
       //         dashArray: '3'
       //     };
       // }
 
-
-
-      // Listen for a click event on the Map element
-      map.on('click', onMapClick);
-
 function setColorFunc(colorty){
     switch (colorty) {
-    case 'Charter':
+      case 'Charter':
         return 'yellow';
-    case 'District' :
+      case 'District' :
         return 'blue';
-    case 'Archdiocese':
-        return '#A9A9A9';
-    case  'Private' :
+      case 'Archdiocese':
+        return '#BDBDBD';
+      case  'Private' :
         return '#151515';
-    case 'Contracted':
+      case 'Contracted':
        return '#000000';
-    case null:
+      case null:
       return '#ffffff';
     }
 };
 
+
+// $.getJSON("zipcodes.geojson",function(data){
+//   zipcodes = L.geoJson(data, {
+//         style: styleFunc,
+//         onEachFeature: function(feature, layer){
+//             layer.bindPopup('Zipcode: '+feature.properties.CODE);
+//             layer.on({
+//                     click: zoomFeature,
+//                     fillColor: setColorFunc(feature.properties.CODE),
+//                     color: 'white'
+//                 });
+//         }
+//     }).addTo(map).bringToBack();
+// });
+
+
+var neighborhoodsLayer = null;
   $.getJSON("data/zipcodes.geojson",function(data){
     zipcodes = L.geoJson(data, {
           style: styleFunc,
-          onEachFeature: function(feature, layer){
-              layer.bindPopup('Zipcode: '+feature.properties.CODE);
-              layer.on({
-                      click: zoomFeature,
-                      fillColor: setColorFunc(feature.properties.CODE),
-                      color: 'white'
-                  });
-          }
-      }).addTo(map).bringToBack();
-  });
-
-  $.getJSON("data/zipcodes.geojson",function(data){
-    zipcodes = L.geoJson(data, {
           onEachFeature: function(feature, layer){
               layer.bindPopup('Zipcode: '+feature.properties.CODE);
               layer.on({
@@ -171,7 +161,7 @@ function setColorFunc(colorty){
       }).addTo(map).bringToBack();
   });
 
-
+              // var neighborhoodsLayer = null;
                 $.getJSON("data/Schools.geojson",function(data){
                     Schools = L.geoJson(data, {
                         pointToLayer: function(feature, latlng) {return new L.CircleMarker(latlng, {
@@ -181,7 +171,7 @@ function setColorFunc(colorty){
                             weight: .5
                           });
                         },
-                    }).addTo(map).bringtoBack;
+                    }).addTo(map).bringtoFront;
                  });
 
 
@@ -197,7 +187,7 @@ function setColorFunc(colorty){
                         layer.bindPopup('School Type: '+feature.properties.TYPE_SPECIFIC + '<br>'
                                      + 'Enrollment: '+feature.properties.ENROLLMENT + '<br>' + 'School Name: ' +feature.properties.SCHOOL_NAME_LABEL + '<br>' + 'Address: ' +feature.properties.STREET_ADDRESS );
                     }
-                  }).addTo(map).bringToBack;
+                  }).addTo(map).bringToFront;
                 });
 
                var markerDefault = function markerDefault(feature){
@@ -273,9 +263,6 @@ function resetCircleMarkerHighlight(e) {
       map.fitBounds(e.target.getBounds().pad(1.5));
       }
 
-
-
-
       // Add Scale Bar to Map
       L.control.scale({position: 'bottomleft'}).addTo(map);
 
@@ -295,9 +282,7 @@ function resetCircleMarkerHighlight(e) {
       div.innerHTML += '<i style="background: #F5F5F5"></i><p>Null</p>';
       div.innerHTML += '<i style="background: #BDBDBD"></i><p>Archdiocese</p>';
       div.innerHTML += '<i style="background: #545454"></i><p>Private</p>';
-      div.innerHTML += '<i style="background: #000000"></i><p>Contracted</p>';
-      div.innerHTML += '<hr>';
-      div.innerHTML += '<i style="background: #cde3f8"></i><p>Philadelphia</p>';
+      div.innerHTML += '<i style="background: #000000"></i><p>Contracted</p>'
       ;
       // Return the Legend div containing the HTML content
       return div;
@@ -305,7 +290,6 @@ function resetCircleMarkerHighlight(e) {
 
       // Add Legend to Map
       legend.addTo(map);
-
 
   </script>
 </body>
