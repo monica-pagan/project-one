@@ -133,7 +133,7 @@ function setColorFunc(colorty){
 };
 
 
-$.getJSON("data/zipcodes.geojson",function(data){
+$.getJSON("zipcodes.geojson",function(data){
   zipcodes = L.geoJson(data, {
         style: styleFunc,
         onEachFeature: function(feature, layer){
